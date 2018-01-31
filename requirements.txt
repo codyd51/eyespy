@@ -2,3 +2,5 @@ opencv-python
 opencv-contrib-python
 matplotlib
 numpy
+typing
+enum34

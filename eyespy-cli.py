@@ -160,5 +160,18 @@ class CameraStream(object):
         self.last_frame = frame
         return frame
 
-cv2.destroyAllWindows()
-capture.release()
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cv2.destroyAllWindows()
+        self.capture.release()
+        return None
+
+detector = Detector(1280, 780)
+with CameraStream() as stream:
+    while cv2.waitKey(30) == -1:
+        # grab a camera frame
+        frame = stream.get_frame()
+        if frame is None:
+            continue
+        # process it
+        frame = detector.process_frame(frame)
+        cv2.imshow("Pupil detection!", frame)
