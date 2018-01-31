@@ -75,6 +75,23 @@ while cv2.waitKey(17) == -1 or True:
             cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
 
     cv2.imshow("Pupil detection!", img)
+class CameraStream(object):
+    def __init__(self):
+        self.last_frame = None # type: Optional[np.ndarray]
+
+    def __enter__(self):
+        self.capture = cv2.VideoCapture()
+        self.capture.open(0)
+        return self
+
+    def get_frame(self):
+        # type: () -> (Optional[np.ndarray])
+        ret, frame = self.capture.read()
+        if not ret:
+            # use cached frame
+            return self.last_frame
+        self.last_frame = frame
+        return frame
 
 cv2.destroyAllWindows()
 capture.release()
