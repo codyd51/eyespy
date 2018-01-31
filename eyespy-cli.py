@@ -1,49 +1,7 @@
 import cv2
-import math
 import numpy as np
-from time import sleep
 from typing import Optional, Tuple
 from enum import Enum
-from random import randint
-
-
-def convertToRGB(img):
-    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-
-def DetectFace(image, faceCascade):
-    min_size = (20,20)
-    image_scale = 2
-    haar_scale = 1.1
-    min_neighbors = 3
-    haar_flags = 0
-
-    print(image.shape)
-    h, w, _ = image.shape
-
-    #grayscale = cv2.CreateImage((image.width, image.height), 8, 1)
-    #smallImage = cv2.resize(image,
-    #                        (0, 0),
-    #                        math.floor(w / image_scale),
-    #                        math.floor(h / image_scale))
-    #cv2.cvtColor(smallImage, smallImage, cv2.COLOR_RGB2GRAY)
-    return image
-
-    cv2.CvtColor(image, grayscale, cv2.CV_BGR2GRAY)
-    cv2.Resize(grayscale, smallImage, cv2.CV_INTER_LINEAR)
-    cv2.EqualizeHist(smallImage, smallImage)
-
-    faces = cv2.HaarDetectObjects(
-            smallImage, faceCascade, cv2.CreateMemStorage(0),
-            haar_scale, min_neighbors, haar_flags, min_size)
-
-    if faces:
-        for ((x, y, w, h), n) in faces:
-            pt1 = (int(x * image_scale), int(y * image_scale))
-            pt2 = (int((x + w) * image_scale), int((y + h) * image_scale))
-            cv2.Rectangle(image, pt1, pt2, cv2.RGB(255, 0, 0), 5, 8, 0)
-
-    return image
 
 
 class EyeSide(Enum):
