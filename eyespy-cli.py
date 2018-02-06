@@ -110,6 +110,25 @@ class Detector(object):
 
         return face_frame
 
+    def get_tracked_pupil_keypoint(self, eye_side):
+        # type: (EyeSide) -> cv2.KeyPoint
+        if eye_side == EyeSide.LEFT_EYE:
+            array = self.last_left_pupil_keypoints
+        else:
+            array = self.last_right_pupil_keypoints
+        avg_center_x, avg_center_y, avg_diameter = 0, 0, 0
+        if not len(array):
+            return cv2.KeyPoint(x=avg_center_x, y=avg_center_y, _size=avg_diameter)
+
+        for point in array:
+            avg_center_x += point.pt[0]
+            avg_center_y += point.pt[1]
+            avg_diameter += point.size
+        avg_center_x /= len(array)
+        avg_center_y /= len(array)
+        avg_diameter /= len(array)
+        return cv2.KeyPoint(x=avg_center_x, y=avg_center_y, _size=avg_diameter)
+
     def get_tracked_eye(self, eye_side):
         # type: (EyeSide) -> Tuple[int, int, int, int]
         if eye_side == EyeSide.LEFT_EYE:
@@ -135,7 +154,6 @@ class Detector(object):
 
     def cache_eye_bounds(self, eye_side, bounds):
         # type: (EyeSide, Tuple[int, int, int, int]) -> None
-
         if eye_side == EyeSide.LEFT_EYE:
             array = self.last_left_eyes
         else:
@@ -144,8 +162,19 @@ class Detector(object):
             # pop the oldest frame
             array.pop(0)
         array.append(bounds)
+
+    def cache_pupil_feature(self, eye_side, pupil_feature):
+        # type: (EyeSide, cv2.KeyPoint) -> None
+        if not pupil_feature:
+            return
+        if eye_side == EyeSide.LEFT_EYE:
+            array = self.last_left_pupil_keypoints
+        else:
+            array = self.last_right_pupil_keypoints
+        if len(array) > Detector._CACHE_SIZE:
             # pop the oldest frame
             array.pop(0)
+        array.append(pupil_feature)
 
 
 class CameraStream(object):
