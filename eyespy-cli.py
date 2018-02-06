@@ -60,7 +60,11 @@ class Detector(object):
             eye_side = EyeSide.LEFT_EYE
         else:
             eye_side = EyeSide.RIGHT_EYE
-        self.cache_eye_bounds(eye_side, (ex, ey, ew, eh))
+
+        min_eye_size = 50
+        max_eye_size = 120
+        if min_eye_size < ew < max_eye_size and min_eye_size < eh < max_eye_size:
+            self.cache_eye_bounds(eye_side, (ex, ey, ew, eh))
 
         return face_frame
 
